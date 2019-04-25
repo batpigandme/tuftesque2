@@ -1,0 +1,242 @@
+---
+title: "Well, hello there, game changer!"
+author: "Pam Poovey"
+date: '`r Sys.Date()`'
+output:
+  tuftesque2::tuftesque
+---
+
+```{r setup, echo=FALSE}
+knitr::knit_hooks$set(class = function(before, options, envir) {
+  if(before){
+    sprintf("<div class = '%s'>", options$class)
+  }else{
+    "</div>"
+  }
+})
+```
+
+<style>
+.tallies {
+  max-width: 100%;
+  background: #fff;
+  margin: 0 auto;
+}
+
+/* Required to make image fluid in IE */
+img:not(.png) {
+/*   max-width: 100%; */
+/*    margin-block-start: 1em; */
+/*    margin-inline-start: 40px; */
+/*    margin-block-end: 1em; */
+/*    margin-inline-end: 40px; */
+}
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic);
+blockquote{
+  font-size: 1.4em;
+  width:60%;
+  margin:40px auto;
+  font-family:Open Sans;
+  font-style:italic;
+  color: #555555;
+  padding:1.2em 30px 1.2em 75px;
+  border-left:8px solid #5a5a5a;
+  line-height:1.6;
+  position: relative;
+  background: #fafafa;
+}
+
+blockquote::before{
+  font-family:Arial;
+  content: "\201C";
+  color:#5a5a5a;
+  font-size:4em;
+  position: absolute;
+  left: 10px;
+  top:-10px;
+}
+
+blockquote::after{
+  content: '';
+}
+
+blockquote span{
+  display:block;
+  color:#5a5a5a;
+  font-style: normal;
+  font-weight: bold;
+  margin-top:1em;
+}
+</style>
+
+## How's it hanging, Grimace?
+
+[Nick Strayer](http://nickstrayer.me/) is the freaking coolest --- just look what he's accomplished when he "should" be writing his thesis! He wrote a responsive, side-note-full R Markdown theme ([tuftesque2](https://github.com/nstrayer/tuftesque2)) that will basically solve all the problems in the world!
+
+Here, I'll obviously put it to its best and highest use.
+
+<blockquote>
+“But what do we wear? Is it, like, gowns and gloves? And do I rent a girdle? Are there gonna be dress fittings? Do I get a bikini wax? And I don't know my tiara size! And, oh, my God, what of shoes?”
+  <span>Pam Poovey</span>
+</blockquote>
+
+::::: {.side-note}
+
+You can even do plots in the side notes! 
+
+```{r echo = FALSE, message=FALSE, warning=FALSE}
+# source https://github.com/aschinchon/pencil-scribbles/blob/master/scribbles.R
+library(imager)
+suppressPackageStartupMessages(library(tidyverse))
+library(scales)
+library(TSP)
+
+# load local image
+file = "https://raw.githubusercontent.com/batpigandme/travelling-salesman-portrait/master/archness/pam/pampoovey.jpg"
+
+# Load, convert to grayscale, filter image (to convert it to bw) and sample
+load.image(file) %>%
+  grayscale() %>%
+  threshold("45%") %>%
+  as.cimg() %>%
+  as.data.frame()  %>%
+  sample_n(8000, weight=(1-value)) %>%
+  select(x,y) -> data
+
+# Compute distances and solve TSP (it may take a minute)
+as.TSP(dist(data)) %>%
+  solve_TSP(method = "arbitrary_insertion") %>%
+  as.integer() -> solution
+
+# Create a dataframe with the output of TSP
+data.frame(id=solution) %>%
+  mutate(order=row_number()) -> order
+
+# Rearrange the original points according the TSP output
+data %>%
+  mutate(id=row_number()) %>%
+  inner_join(order, by="id") %>% arrange(order) %>%
+  select(x,y) -> data_to_plot
+
+# A little bit of ggplot to plot results
+ggplot(data_to_plot, aes(x,y)) +
+  geom_path() +
+  scale_y_continuous(trans=reverse_trans())+
+  coord_fixed()+
+  theme_void()
+```
+::::: 
+
+Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+
+## The girl with the back tattoo
+
+<blockquote>
+<img src="img/pam_tally_marks.svg"/>
+
+For the Angel of Death spread his wings on the blast,  
+And breathed in the face of the foe as he passed:  
+And the eyes of the sleepers waxed deadly and chill,  
+And their hearts but once heaved, and for ever grew still!  
+<span>Lord Byron's "The Destruction of Sennacherib" (1815).</span>
+</blockquote>
+
+[How do ya think I paid for college?]{.side-note}
+
+## Basic plots work pretty well
+
+
+```{r, echo=FALSE, fig.height = 2, fig.width=5}
+tibble::tibble( x = rpois(200, 40) ) %>% 
+  ggplot(aes(x = x)) + 
+  geom_histogram(bins = 100)
+```
+
+
+## Why are you so scared of crocodiles?
+
+According to [Wikipedia](https://en.wikipedia.org/wiki/Crocodile): “__Crocodiles__ (subfamily __Crocodylinae__) or __true crocodiles__ are large [semiaquatic reptiles](https://en.wikipedia.org/wiki/List_of_semiaquatic_tetrapods) that live throughout the tropics in Africa, Asia, the Americas and Australia. [Crocodylinae](https://en.wikipedia.org/wiki/Crocodylidae), all of whose members are considered true crocodiles, is classified as a biological [subfamily](https://en.wikipedia.org/wiki/Subfamily). A broader sense of the term crocodile, Crocodylidae that includes [Tomistoma](https://en.wikipedia.org/wiki/Tomistoma), is not used in this article. The term crocodile here applies to only the species within the subfamily of Crocodylinae. The term is sometimes used even more loosely to include all extant members of the order Crocodilia, which includes the alligators and caimans (family [Alligatoridae](https://en.wikipedia.org/wiki/Alligatoridae)), the gharial and false gharial (family [Gavialidae](https://en.wikipedia.org/wiki/Gavialidae)), and all other living and fossil [Crocodylomorpha](https://en.wikipedia.org/wiki/Crocodylomorpha).”
+
+<blockquote>Gee, I don't know, Cyril. Maybe deep down, I'm afraid of any apex predator that lived through the K-T extinction. Physically unchanged for 100 million years, because it's the perfect killing machine --- a half-ton of cold-blooded fury, with a bite force of 20,000 Newtons, and stomach acid so strong, it can dissolve bones and hooves. And now we're surrounded, those snake-eyes are watching from the shadows, waiting for the night.
+<span>Sterling Archer</span>
+</blockquote>
+
+## Full-width plots are also baller AF...
+
+```{r core group colors, include = FALSE}
+## core group color scale
+library(tidyverse)
+library(stringr)
+library(here)  # due to threats of arson
+library(ggthemes)
+library(extrafont)
+
+ll_unique_top20 <- readr::read_csv(here::here("blah", "data", "ll_unique_top20.csv"))
+
+library(RColorBrewer)
+core_group <- c("ARCHER", "LANA", "MALORY", "CYRIL", "PAM", "CHERYL", "RAY", "KRIEGER")
+core_colors <- c("#003EFF", "#B02E15", "#D36625", "#00AC3F", "#D2C533", "#D855FD", "#61FFB8", "#966FD6", "#888888")
+names(core_colors) <- core_group
+colScale <- scale_color_manual(name = "character", values = core_colors)
+coreCols <-   c("ARCHER" = "#003EFF", "LANA" = "#B02E15", "MALORY" = "#D36625", "CYRIL" = "#00AC3F", "PAM" = "#D2C533", "CHERYL" = "#D855FD", "RAY" = "#61FFB8", "KRIEGER" = "#966FD6", "NONCORE" = "#888888")
+```
+
+```{r distinctive term plot, eval = FALSE, echo = FALSE}
+## plot term rank for characters ordered by total words
+unique_char_terms <- ggplot(ll_unique_top20, aes(character, negrank)) +
+  geom_point(color = "white") +
+  geom_label(aes(label = ll_unique_top20$term, 
+                 fill = ll_unique_top20$character), color = 'white', fontface = 'bold', size = 4) +
+  ggtitle("Classic you", 
+          subtitle = "Distinctive terms by character in Archer") +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(breaks = c(-1, -5, -10, -15, -20), 
+                     labels = c("#1", "#5", "#10", "#15", "#20")) +
+  scale_x_discrete(position = "top") +
+  scale_fill_manual(values = coreCols) +
+  theme(legend.position = "none",
+        axis.ticks = element_blank(),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        axis.text.x = element_text(size = 12, family = 'Consolas', 
+                                   face = "bold", colour = "black"),
+        axis.text.y = element_text(size = 10, family = 'Consolas'),
+        plot.title = element_text(size = 20, family = 'Baveuse-Regular'),
+        plot.subtitle = element_text(size = 13, family = 'Consolas'))
+
+unique_char_terms
+```
+
+```{r ann plot, class='full-width-plot', echo = FALSE, fig.height = 7, fig.width = 11}
+## plot using annotation instead of x axis label
+ann_unique_char_terms <- ggplot(ll_unique_top20, aes(character, negrank)) +
+  geom_point(color = "white") +
+  geom_label(aes(label = ll_unique_top20$term, fill = ll_unique_top20$character), color = 'white', fontface = 'bold', size = 4) +
+  ggtitle("Classic you", subtitle = "Distinctive terms by character in Archer") +
+  labs(x = NULL, y = NULL, caption = "by Mara Averick (@dataandme) & Elijah Meeks (@Elijah_Meeks)") +
+  scale_y_continuous(breaks = c(-1, -5, -10, -15, -20), labels = c("#1", "#5", "#10", "#15", "#20")) +
+  scale_fill_manual(values = coreCols) +
+  theme(legend.position = "none",
+        axis.ticks = element_blank(),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 10, family = 'Consolas'),
+        plot.title = element_text(size = 22, family = 'Baveuse-Regular'),
+        plot.subtitle = element_text(size = 14, family = 'Consolas'),
+        plot.caption = element_text(color = "grey50", hjust = 0, family = 'Consolas')) +
+  annotate(geom = "text", x = 1, y = 0, label = "ARCHER", family = "Consolas", fontface = "bold", size = 4.5) +
+  annotate(geom = "text", x = 2, y = 0, label = "LANA", family = "Consolas", fontface = "bold", size = 4.5) +
+  annotate(geom = "text", x = 3, y = 0, label = "MALORY", family = "Consolas", fontface = "bold", size = 4.5) +
+  annotate(geom = "text", x = 4, y = 0, label = "CYRIL", family = "Consolas", fontface = "bold", size = 4.5) +
+  annotate(geom = "text", x = 5, y = 0, label = "PAM", family = "Consolas", fontface = "bold", size = 4.5) +
+  annotate(geom = "text", x = 6, y = 0, label = "CHERYL", family = "Consolas", fontface = "bold", size = 4.5) +
+  annotate(geom = "text", x = 7, y = 0, label = "RAY", family = "Consolas", fontface = "bold", size = 4.5) +
+  annotate(geom = "text", x = 8, y = 0, label = "KRIEGER", family = "Consolas", fontface = "bold", size = 4.5)
+
+ann_unique_char_terms
+```
